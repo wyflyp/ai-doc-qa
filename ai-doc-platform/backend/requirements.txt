@@ -1,0 +1,17 @@
+# ---- 基础（必需）----
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.12
+pymysql>=1.1.1
+python-dotenv>=1.0.1
+openai>=1.54.0
+
+# ---- RAG ----
+# numpy：批量算余弦相似度，快几十倍。不装也能跑（纯 Python 兜底），但慢
+numpy>=2.0.0
+
+# fastembed：本地语义向量 + cross-encoder 精排（onnxruntime 后端，不需要 torch）
+# 装了 → 向量用 BAAI/bge-small-zh-v1.5（90MB），精排用 BAAI/bge-reranker-base（约 1GB）
+# 不装 → 向量自动降级到 hashing 词面向量、精排自动跳过，功能不残废
+# 国内装不上时用镜像：pip install fastembed -i https://mirrors.aliyun.com/pypi/simple/
+fastembed>=0.9.0

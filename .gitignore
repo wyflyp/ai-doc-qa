@@ -1,0 +1,62 @@
+# ============ 绝对不能提交 ============
+
+# 环境变量：里面有 LLM_API_KEY、数据库密码
+.env
+.env.local
+*.env
+
+# 用户上传的原始文档：课程实验报告，含真实姓名、学号、班级
+# 注意：必须写完整相对路径。只写 backend/uploads/ 是匹配不到
+# ai-doc-platform/backend/uploads/ 的（带斜杠的模式锚定到仓库根目录）
+ai-doc-platform/backend/uploads/
+backend/uploads/
+
+# 评估产物：包含问答原文和引用片段
+ai-doc-platform/backend/e2e_report.csv
+
+# 本地记忆目录（含个人信息）
+.workbuddy/
+
+# ============ 体积/产物 ============
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 向量模型缓存（约 90MB）
+.model_cache/
+**/.model_cache/
+
+# pip 下载缓存（几十 MB 的 wheel 二进制）
+.pipcache/
+**/.pipcache/
+
+# 前端
+node_modules/
+dist/
+*.log
+
+# 数据库导出
+*.sql.gz
+*.db
+
+# 临时调试输出
+rag_out.txt
+r_out.txt
+u.json
+c.json
+o.txt
+
+# ============ 编辑器 ============
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ============ 说明 ============
+# testdata/ 不忽略：里面的示例文档是 eval_retrieval.py / eval_suite.py 的依赖，
+# 且都是自造的合成数据（员工手册、故障代码、公司制度），不含个人隐私。
