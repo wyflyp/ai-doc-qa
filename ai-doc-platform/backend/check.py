@@ -174,8 +174,9 @@ def main() -> int:
         state = "开启" if qinfo["enabled"] else "关闭（默认，叠加精排后无增益）"
         print(f"[OK] 查询改写：{state}")
 
-        print("[提示] 默认链路 = 混合检索 + 精排，约 1.2 秒。")
-        print("       关掉精排约 200ms，但实测 Hit@1 会从 44/49 掉到 36/49。")
+        print("[提示] 默认链路 = 混合检索 + 精排 + 子问题分解。")
+        print("       实测：本地 CPU 上检索约 9 秒（首次加载模型约 15 秒），关掉精排降到 0.2 秒。")
+        print("       关精排的代价：57 条题上 Hit@1 从 44/49 掉到 36/49。")
     except Exception as exc:
         print(f"[X] RAG 检查失败：{str(exc)[:120]}")
         problems.append("RAG 索引异常")
