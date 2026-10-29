@@ -11,6 +11,7 @@ const streaming = ref(false)
 const sources = ref([])           // 本次检索到的片段
 const mode = ref('')              // rag / fulltext
 const elapsed = ref(0)
+const llmMs = ref(0)
 const error = ref('')
 const uploading = ref(false)
 const answerBox = ref(null)
@@ -109,6 +110,7 @@ async function send() {
   sources.value = []
   mode.value = ''
   elapsed.value = 0
+  llmMs.value = 0
   streaming.value = true
 
   try {
@@ -158,6 +160,7 @@ async function send() {
           await scrollToBottom()
         } else if (evt.type === 'done') {
           elapsed.value = evt.elapsed_ms
+          llmMs.value = evt.llm_ms || 0
         } else if (evt.type === 'error') {
           error.value = evt.message
         }
@@ -279,7 +282,9 @@ async function scrollToBottom() {
           在左侧选择文档（可多选），然后在下面提问
         </p>
 
-        <p v-if="elapsed" class="elapsed">耗时 {{ (elapsed / 1000).toFixed(2) }}s</p>
+        <p v-if="elapsed" class="elapsed">
+          总耗时 {{ (elapsed / 1000).toFixed(1) }}s<span v-if="llmMs"> （检索 {{ ((elapsed - llmMs) / 1000).toFixed(1) }}s + 生成 {{ (llmMs / 1000).toFixed(1) }}s）</span>
+        </p>
       </div>
 
       <!-- 检索依据：RAG 的可解释性就体现在这里 -->

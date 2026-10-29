@@ -254,6 +254,10 @@ def chat_stream(req: ChatRequest):
     # 统一成列表，去重保序
     resolved = list(dict.fromkeys(req.doc_ids or ([req.doc_id] if req.doc_id else [])))
 
+    # 从请求进来到这里就开始计时 —— 检索（尤其精排）很吃时间，
+    # 只统计 LLM 生成会严重低估用户的实际等待
+    t_request = time.time()
+
     docs = []
     for did in resolved:
         d = db.get_document(did)
@@ -362,10 +366,18 @@ def chat_stream(req: ChatRequest):
                     yield sse({"type": "delta", "content": delta})
 
             full = "".join(answer)
-            cost = int((time.time() - started) * 1000)
+            llm_ms = int((time.time() - started) * 1000)
+            total_ms = int((time.time() - t_request) * 1000)
             if history_doc_id:
-                db.insert_chat_message(history_doc_id, req.question, full, cost)
-            yield sse({"type": "done", "elapsed_ms": cost, "mode": mode})
+                db.insert_chat_message(history_doc_id, req.question, full, total_ms)
+            yield sse({
+                "type": "done",
+                # 总耗时 = 检索 + 生成，这才是用户实际等的时间
+                "elapsed_ms": total_ms,
+                # 单独给出生成耗时，方便判断慢在检索还是慢在模型
+                "llm_ms": llm_ms,
+                "mode": mode,
+            })
 
         except Exception as exc:
             # 流已经开始就不能再改 HTTP 状态码了，只能在流内推送错误事件
