@@ -306,6 +306,18 @@ ai-doc-frontend/
 
 ## 跑起来
 
+> **克隆下来是空的**：`uploads/`（真实文档）和 `.env`（密钥）都已 gitignore。
+> 想立刻看到效果，用自带示例数据导入：
+>
+> ```bash
+> cd ai-doc-platform/backend
+> .venv\Scripts\python.exe import_corpus.py testdata/
+> ```
+>
+> 会导入 4 份合成文档（员工手册、公司制度汇编、故障代码手册、IT 服务管理规范）。
+> 然后就能问「住酒店能报多少」「E4015 是什么故障」。
+> 想用自己的文档：`import_corpus.py "你的目录"`，支持 .docx / .txt / .md / .csv。
+
 ### 1. 建数据库
 
 在 Navicat / MySQL 命令行执行 `backend/init_db.sql`，然后把 `.env.example` 复制为 `.env` 填上密码。
